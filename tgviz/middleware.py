@@ -58,7 +58,7 @@ class TGVizUpdateProcessor:
         api_url: str = "https://api.tgviz.com/v1/post-update",
         timeout: float = 5.0,
         is_async: bool = True,
-        exclude_updates: List[str] = ['inline_query']
+        exclude_update_types: List[str] = ['inline_query']
     ) -> None:
         """
         Initializes the TGVizUpdateProcessor.
@@ -69,7 +69,7 @@ class TGVizUpdateProcessor:
         :param is_async: If True, sends the update asynchronously (fire-and-forget) - the fastest option.
                          If False, waits for the API response and may halt processing if
                          skip_update=True is returned - required if "mandatory subscription" is on.
-        :param exclude_updates: A list of Update types (as strings) that should be excluded from API logging.
+        :param exclude_update_types: A list of Update types (as strings) that should be excluded from API logging.
                                 Updates with these types will be processed directly by the handler.
         """
         self.client = TGVizClient(
@@ -78,7 +78,7 @@ class TGVizUpdateProcessor:
             timeout=timeout
         )
         self.is_async = is_async
-        self.exclude_updates = exclude_updates
+        self.exclude_update_types = exclude_update_types
 
     async def process_update(
         self,
@@ -87,7 +87,7 @@ class TGVizUpdateProcessor:
     ) -> Any:
         """
         Sends the update to the API and then calls the provided handler.
-        If the event type is "undefined" or is in the `exclude_updates` list, the update is passed 
+        If the event type is "undefined" or is in the `exclude_update_types` list, the update is passed 
         directly to the handler without sending it to the API.
         If the API returns an action with skip_update=True, processing is halted.
 
@@ -99,7 +99,7 @@ class TGVizUpdateProcessor:
         if event_type == "undefined":
             logger.warning("Undefined update type received; skipping API processing.")
             return await handler(update)
-        if event_type in self.exclude_updates:
+        if event_type in self.exclude_update_types:
             return await handler(update)
 
         try:
