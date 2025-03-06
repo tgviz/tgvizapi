@@ -49,8 +49,7 @@ you can use the **TGVizUpdateProcessor**.
 
 ```python
 import asyncio
-from aiogram import Dispatcher, Bot, types
-from aiogram.dispatcher.middlewares import BaseMiddleware
+from aiogram import Dispatcher, Bot, types, BaseMiddleware
 from tgviz.middleware import TGVizUpdateProcessor
 
 TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
